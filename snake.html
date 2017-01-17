@@ -1,0 +1,259 @@
+<!-- Made By: Tom Burris -->
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+	<title>Snake</title>
+
+	<style type="text/CSS">
+		body {
+			margin:0px;
+		}
+		#canvas {
+			
+		}
+	</style>
+</head>
+
+<body>
+	<canvas id="canvas"><canvas>
+
+	<script type="text/javascript" name="Point.js">
+		Point = function(x, y) {
+			this.x = x;
+			this.y = y;
+		};
+		Point.prototype.add = function(point) {
+			this.x += (point.x || 0);
+			this.y += (point.y || 0);
+		};
+		Point.prototype.sum = function(point) {
+			return new Point(this.x + (point.x || 0), this.y + (point.y || 0));
+		};
+		Point.prototype.limit = function(minX, minY, maxX, maxY) {
+			this.x = ((this.x >= minX) ? ((this.x <= maxX) ? this.x : maxX) : minX);
+			this.y = ((this.y >= minY) ? ((this.y <= maxY) ? this.y : maxY) : minY);
+		};
+		Point.prototype.clone = function() {
+			return (new Point(this.x, this.y));
+		};
+		Point.prototype.isLimitedBy = function(minX, minY, maxX, maxY) {
+			return (this.x >= minX && this.y >= minY && this.x <= maxX && this.y <= maxY);
+		};
+		Point.prototype.negate = function() {
+			this.x *= -1;
+			this.y *= -1;
+		};
+		Point.prototype.equals = function(point) {
+			return (this.x == point.x && this.y == point.y);
+		};
+	</script>
+	
+	<script type="text/javascript" name="snakeGame">
+		/* User-definable Variables */
+		var cols = 20;
+		var rows = 20;
+		var tileSize = 30;
+		var sps = 8; // Steps per second.
+		var useBot = false;
+		/* End User-definable Variables */
+		
+		var canvas;
+		var ctx;
+		var tiles;
+		var snake;
+		var Point;
+		var dir;
+		var loop;
+		var apple;
+		var keydown;
+		var empty;
+		var finalText;
+		
+		// Rainbow tables:
+		var directions = [new Point(1, 0), new Point(0, -1), new Point(-1, 0), new Point(0, 1), new Point(0, 0)]; // Right, up, left, right, none.
+		var keyCodeToDir = {"37": 2, "38": 1, "39": 0, "40": 3, "68": 0, "87": 1, "65": 2, "83": 3}; // leftArrow, upArrow, rightArrow, downArrow, d, w, a, s.
+		//var difToDir = {"10": 0, "0-1": 1, "-10": 2, "01": 3};
+		
+		window.addEventListener("keydown", keydown = function(event) { // Get user input.
+			var tmpDir = keyCodeToDir[event.keyCode+""]; // Convert keyCode to string, then a direction.
+			if (tmpDir != null && tmpDir != dir[dir.length - 1] && (tmpDir + 2) % 4 != dir[dir.length - 1]) {
+				dir.push(tmpDir);
+			}
+		});
+		function initCanvas() { // Setup canvas with context and dimensions.
+			canvas = document.getElementById("canvas");
+			canvas.width = cols * tileSize;
+			canvas.height = rows * tileSize;
+			ctx = canvas.getContext("2d");
+		}
+		function initTiles() { // Set 'tiles' to a 2 dimensional array, and fill it with objects.
+			tiles = [];
+			for (var x = 0; x < cols; x++) {
+				tiles[x] = [];
+				for (var y = 0; y < rows; y++) {
+					tiles[x][y] = {};
+				}
+			}
+		}
+		function initSnake() { // Set head of snake to a random location, then do miscellaneous stuff.
+			snake = [];
+			snake.add = function(element) {
+				tiles[element.x][element.y].taken = true;
+				snake.push(element);
+			};
+			snake.remove = function(index) {
+				tiles[snake[index].x][snake[index].y].taken = false;
+				snake.splice(index, 1);
+			}
+			directions.find = function(point) {
+				for(var n = 0; n < this.length; n++) {
+					if (this[n].equals(point)) {
+						return n;
+					}
+					return -1;
+				}
+			};
+			snake.add(new Point(randomInt(0, cols - 1), randomInt(0, rows - 1)));
+			dir = [4];
+		}
+		function forAll(forEach) { // Loop through all tiles.
+			for (var y = 0; y < rows; y++) {
+				for (var x = 0; x < cols; x++) {
+					forEach(x, y);
+				}
+			}
+		}
+		function step() {
+			if (dir.length > 1) {
+				dir.splice(0, 1);
+			}
+			if (snake.length == cols * rows ){//|| Math.random() < 0.005) {
+				finalText = "You won! :D";
+				return;
+			}
+			var next = snake[snake.length - 1].clone().sum(directions[dir[0]]);
+			for (var n = 0; n < snake.length - 3; n++) {
+				if (snake[n].equals(snake[snake.length - 1])) {
+					var bitItself = true;
+				}
+			}
+			if (!next.isLimitedBy(0, 0, cols - 1, rows - 1) || bitItself) {
+				finalText = "You lost! >:)";
+				return;
+			}
+			snake.add(next);
+			if (!apple.equals(snake[snake.length - 1])) {
+				snake.remove(0);
+			} else if (snake.length != cols * rows) {
+				newApple();
+			}
+			if (playerBot && playerBot.hook && useBot) {
+				playerBot.hook(tiles.slice(), snake.slice(), apple.clone());
+			}
+		}
+		function newApple() {
+			empty = [];
+			forAll(function(x, y) {
+				if (!tiles[x][y].taken) {
+					empty.push(new Point(x, y));
+				}
+			});
+			var point = empty[randomInt(0, empty.length - 1)];
+			apple = new Point(point.x, point.y);
+		}
+		function randomInt(min, max) {
+			return Math.floor(Math.random() * (max - min + 1)) + min;
+		}
+		function drawFinalText() {
+			clearInterval(loop);
+			ctx.lineWidth = 1;
+			ctx.strokeStyle = "turquoise";
+			ctx.fillStyle = "black";
+			ctx.font = (canvas.width / 8) + "px Trajan"; // Pfft, I only wish it was Trajan :'(.
+			ctx.fillText(finalText, canvas.width / 8, canvas.height / 2 + canvas.width / 32, canvas.width * 3 / 4);
+			ctx.strokeText(finalText, canvas.width / 8, canvas.height / 2 + canvas.width / 32, canvas.width * 3 / 4);
+		}
+		function draw() { // Draw entire frame.
+			ctx.beginPath(); // Clear canvas.
+			ctx.fillStyle = "black";
+			ctx.rect(0, 0, canvas.width, canvas.height);
+			ctx.fill();
+			
+			ctx.beginPath(); // Draw Apple.
+			ctx.fillStyle = "turquoise";
+			ctx.arc((apple.x + 0.5) * tileSize, (apple.y + 0.5) * tileSize, tileSize / 2, 0, 2 * Math.PI);
+			ctx.fill();
+			
+			ctx.beginPath(); // Draw snake.
+			ctx.fillStyle = "turquoise";
+			for (var n = 0; n < snake.length - 1; n++) { // minus one, beacuase we don't want to draw the head.
+				ctx.moveTo(snake[n].x * tileSize, snake[n].y * tileSize);
+				ctx.rect(snake[n].x * tileSize, snake[n].y * tileSize, tileSize, tileSize);
+			}
+			ctx.fill();
+			ctx.beginPath(); // Draw snake's head.
+			ctx.fillStyle = "#00898e"; // Dark turquoise.
+			ctx.rect(snake[snake.length - 1].x * tileSize, snake[snake.length - 1].y * tileSize, tileSize, tileSize);
+			ctx.fill();
+			
+			ctx.beginPath(); // Draw grid.
+			ctx.strokeStyle = "white";
+			for (var x = 0; x <= cols; x++) {
+				ctx.moveTo(x * tileSize, 0);
+				ctx.lineTo(x * tileSize, canvas.height);
+			}
+			for (var y = 0; y <= rows; y++) {
+				ctx.moveTo(0, y * tileSize);
+				ctx.lineTo(canvas.width, y * tileSize);
+			}
+			ctx.stroke();
+			
+			if (finalText) { // Draw final text. (win or lose).
+				drawFinalText();
+			}
+			
+			ctx.fillStyle = "white"; // Draw score.
+			ctx.font = Math.max((canvas.width / 30), 20) + "px Trajan";
+			ctx.fillText("Score: " + (snake.length - 1), canvas.width / 80, parseInt(ctx.font) * 25 / 30, canvas.width * 39 / 40);
+		}
+		
+		/* Main */
+		initCanvas();
+		initTiles();
+		initSnake();
+		newApple();
+		draw();
+		loop = setInterval(function() {
+			try { // Just for debuggging purposes.
+				step();
+				draw();
+			} catch (err) {
+				clearInterval(loop);
+				throw err;
+			}
+		}, 1000 / sps);
+		/* End Main */
+	</script>
+
+	<script type="text/javascript" name="playerBot">
+	
+		var playerBot = {
+			hook: function(tiles, snake, apple) {
+				// To-do: make a player bot.
+				var dif = new Point(Math.abs(apple.x - snake[snake.length - 1].x), Math.abs(apple.y - snake[snake.length - 1].y));
+				
+				if (dif.x > dif.y) {
+					
+				} else {
+					
+				}
+			}
+		};
+	</script>
+	
+</body>
+
+</html>
