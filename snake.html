@@ -18,7 +18,7 @@
 </head>
 
 <body>
-	<canvas id="canvas"><canvas>
+	<canvas id="canvas"></canvas>
 
 	<script type="text/javascript" name="Point.js">
 		Point = function(x, y) {
@@ -58,6 +58,7 @@
 		var tileSize = 30;
 		var sps = 8; // Steps per second.
 		var useBot = false;
+		var rainbowMode = true;
 		/* End User-definable Variables */
 		
 		var canvas;
@@ -141,7 +142,7 @@
 				}
 			}
 			if (!next.isLimitedBy(0, 0, cols - 1, rows - 1) || bitItself) {
-				finalText = "You lost! >:)";
+				finalText = "You lost! :c";
 				return;
 			}
 			snake.add(next);
@@ -187,17 +188,28 @@
 			ctx.arc((apple.x + 0.5) * tileSize, (apple.y + 0.5) * tileSize, tileSize / 2, 0, 2 * Math.PI);
 			ctx.fill();
 			
-			ctx.beginPath(); // Draw snake.
-			ctx.fillStyle = "turquoise";
-			for (var n = 0; n < snake.length - 1; n++) { // minus one, beacuase we don't want to draw the head.
-				ctx.moveTo(snake[n].x * tileSize, snake[n].y * tileSize);
-				ctx.rect(snake[n].x * tileSize, snake[n].y * tileSize, tileSize, tileSize);
+			if (!rainbowMode) {
+				ctx.beginPath(); // Draw snake.
+				ctx.fillStyle = "turquoise";
+				for (var n = 0; n < snake.length - 1; n++) { // minus one, beacuase we don't want to draw the head.
+					ctx.moveTo(snake[n].x * tileSize, snake[n].y * tileSize);
+					ctx.rect(snake[n].x * tileSize, snake[n].y * tileSize, tileSize, tileSize);
+				}
+				ctx.fill();
+				ctx.beginPath(); // Draw snake's head.
+				ctx.fillStyle = "#00898e"; // Dark turquoise.
+				ctx.rect(snake[snake.length - 1].x * tileSize, snake[snake.length - 1].y * tileSize, tileSize, tileSize);
+				ctx.fill();
+			} else {
+				for (var n = 0; n < snake.length; n++) { // Draw rainbow snake.
+					ctx.beginPath();
+					ctx.fillStyle = "hsl(" + (~~((n / snake.length) * 361)) + ", 100%, 50%)";
+					ctx.moveTo(snake[n].x * tileSize, snake[n].y * tileSize);
+					ctx.rect(snake[n].x * tileSize, snake[n].y * tileSize, tileSize, tileSize);
+					ctx.fill();
+					console.log(ctx.fillStyle);
+				}
 			}
-			ctx.fill();
-			ctx.beginPath(); // Draw snake's head.
-			ctx.fillStyle = "#00898e"; // Dark turquoise.
-			ctx.rect(snake[snake.length - 1].x * tileSize, snake[snake.length - 1].y * tileSize, tileSize, tileSize);
-			ctx.fill();
 			
 			ctx.beginPath(); // Draw grid.
 			ctx.strokeStyle = "white";
