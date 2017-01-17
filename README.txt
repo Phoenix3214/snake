@@ -27,7 +27,7 @@ In addition, it is only allowed to affect the game by simulating user-input.
 
 Things I plan to add to the code:
 
-	* Make a settings panel for the user, (I know how)
+	* Make a settings panel for the user, 				(I know how)
 		possible variables they could change:
 
 		* Game speed.
@@ -35,12 +35,15 @@ Things I plan to add to the code:
 		* Number of rows.
 		* Colors. (Maybe)
 
-	* Use an icon for the apple. 						(Maybe) (I know how)
+	* Use an icon for the apple. 						(I know how)
 	* Draw only what is needed to the canvas. 			(I know how)
+	* Make a 'rainbow mode',
+		which makes the snake is rainbow colored.		(I know how)
 	* A 'playerBot' which is described above. 			(I don't know how)
 	
 Things I have already added:
-
+	
+	* Improved user-input to feel more responsive.
 	* Simpler code from the original two years ago.
 	* Removed sound effects. Ew.
 	* Styled it a little better.
