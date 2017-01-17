@@ -1,1 +1,1 @@
-# snake.github.io
+# snake
