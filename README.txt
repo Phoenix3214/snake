@@ -1,6 +1,6 @@
 # Snake
 
-Want to play it? Go ahead! ---> <a target="_blank" href="https://tombez.github.io/snake/snake.html">Let's play!</a>
+Want to play it? Go ahead! ---> https://tombez.github.io/snake/snake.html
 
 --- 17-1-2017 D-M-Y ---
 
@@ -39,6 +39,7 @@ Things I plan to add to the code:
 		* Game speed.
 		* Number of columns.
 		* Number of rows.
+		* Tile size.
 		* Colors. (Maybe)
 
 	* Use an icon for the apple. 						(I know how)
