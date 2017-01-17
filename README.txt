@@ -2,6 +2,8 @@
 
 Want to play it? Go ahead! ---> https://tombez.github.io/snake/snake.html
 
+Use arrow keys or WASD to control the snake. Try to beat my highscore of 79!
+
 --- 17-1-2017 D-M-Y ---
 
 This project started two years ago when I made a snake game while learning JavaScript.
@@ -15,13 +17,14 @@ The old version is called 'SnakeGameOld.html'.
 	The code has not been touched for two years, and will never be updated.
 
 The end goal is to develop an algorithm that will beat the snake game everytime.
+	(Probably with A*)
 
 The restrictions to the algorithm are similar to a humans,
 in the sense that the information given to it is limited.
 Only including:
 
 	* A two dimensional array of objects representing the squares of the game,
-		with a boolean named 'taken' representing whether there is a snake in that tile.
+		each has a boolean named 'taken' representing whether there is a snake in that tile.
 	* A one dimensional array of objects representing the segments of the snake,
 		in order from tail to head, each containing an 'x' and 'y' property.
 	* A 'point' object named 'apple' representing the location of the apple,
@@ -42,15 +45,14 @@ Things I plan to add to the code:
 		* Tile size.
 		* Colors. (Maybe)
 
-	* Use an icon for the apple. 						(I know how)
-	* Draw only what is needed to the canvas. 			(I know how)
-	* Make a 'rainbow mode',
-		which draws the snake rainbow colored.			(I know how)
-	* A 'playerBot' which is described above. 			(I don't know how)
+	* Use an icon for the apple.						(I know how)
+	* Draw only what is needed to the canvas.			(I know how)
+	* A 'playerBot' which is described above.			(I don't know how)
 	
 Things I have already added:
 	
 	* Improved user-input to feel more responsive.
+	* Made a 'rainbow mode', which draws the snake rainbow colored.
 	* Simpler code from the original two years ago.
 	* Removed sound effects. Ew.
 	* Styled it a little better.
