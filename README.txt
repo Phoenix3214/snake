@@ -1,12 +1,18 @@
 # Snake
 
+Want to play it? Go ahead! ---> <a target="_blank" href="https://tombez.github.io/snake/snake.html">Let's play!</a>
+
 --- 17-1-2017 D-M-Y ---
 
 This project started two years ago when I made a snake game while learning JavaScript.
 
 Recently I looked at the code the 2 years younger version of myself made, and cringed.
 So I made a fresh version of the game 'snake' with my current knowledge.
-It should be called 'snake.html'. The old one should be called 'SnakeGameOld', (...html and ...js).
+
+The fresh version is called 'snake.html'.
+The old version is called 'SnakeGameOld.html'.
+	It also needs 'SnakeGameOld.js'.
+	The code has not been touched for two years, and will never be updated.
 
 The end goal is to develop an algorithm that will beat the snake game everytime.
 
@@ -38,7 +44,7 @@ Things I plan to add to the code:
 	* Use an icon for the apple. 						(I know how)
 	* Draw only what is needed to the canvas. 			(I know how)
 	* Make a 'rainbow mode',
-		which makes the snake is rainbow colored.		(I know how)
+		which draws the snake rainbow colored.			(I know how)
 	* A 'playerBot' which is described above. 			(I don't know how)
 	
 Things I have already added:
