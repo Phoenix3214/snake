@@ -55,8 +55,8 @@
 		/* User-definable Variables */
 		var cols = 20;
 		var rows = 20;
-		var tileSize = 40;
-		var sps = 10; // Steps per second.
+		var tileSize = 30;
+		var sps = 8; // Steps per second.
 		var useBot = false;
 		/* End User-definable Variables */
 		
@@ -74,12 +74,12 @@
 		
 		// Rainbow tables:
 		var directions = [new Point(1, 0), new Point(0, -1), new Point(-1, 0), new Point(0, 1), new Point(0, 0)]; // Right, up, left, right, none.
-		var keyCodeToDir = [2, 1, 0, 3];
+		var keyCodeToDir = {"37": 2, "38": 1, "39": 0, "40": 3, "68": 0, "87": 1, "65": 2, "83": 3}; // leftArrow, upArrow, rightArrow, downArrow, d, w, a, s.
 		//var difToDir = {"10": 0, "0-1": 1, "-10": 2, "01": 3};
 		
 		window.addEventListener("keydown", keydown = function(event) { // Get user input.
-			var tmpDir = keyCodeToDir[event.keyCode - 37]; // Convert keyCode to an index, then to a direction.
-			if (tmpDir != dir[dir.length - 1] && (tmpDir + 2) % 4 != dir[dir.length - 1]) {
+			var tmpDir = keyCodeToDir[event.keyCode+""]; // Convert keyCode to string, then a direction.
+			if (tmpDir != null && tmpDir != dir[dir.length - 1] && (tmpDir + 2) % 4 != dir[dir.length - 1]) {
 				dir.push(tmpDir);
 			}
 		});
