@@ -1,5 +1,4 @@
 # Snake
-
 Want to play it? Go ahead! ---> https://tombez.github.io/snake/snake.html
 
 Use arrow keys or WASD to control the snake. Try to beat my highscore of 79!
@@ -33,10 +32,9 @@ Only including:
 In addition, it is only allowed to affect the game by simulating user-input.
 
 # Checklist
-
 Things I plan to add to the code:
 
-	* Make a settings panel for the user, 				(I know how)
+	* A settings panel for the user,					(I know how)
 		possible variables they could change:
 
 		* Game speed.
