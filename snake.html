@@ -76,7 +76,7 @@
 		// Rainbow tables:
 		var directions = [new Point(1, 0), new Point(0, -1), new Point(-1, 0), new Point(0, 1), new Point(0, 0)]; // Right, up, left, right, none.
 		var keyCodeToDir = {"37": 2, "38": 1, "39": 0, "40": 3, "68": 0, "87": 1, "65": 2, "83": 3}; // leftArrow, upArrow, rightArrow, downArrow, d, w, a, s.
-		//var difToDir = {"10": 0, "0-1": 1, "-10": 2, "01": 3};
+		var dirToKeyCode = [39, 38, 37, 40];
 		
 		window.addEventListener("keydown", keydown = function(event) { // Get user input.
 			var tmpDir = keyCodeToDir[event.keyCode+""]; // Convert keyCode to string, then a direction.
@@ -109,14 +109,6 @@
 				tiles[snake[index].x][snake[index].y].taken = false;
 				snake.splice(index, 1);
 			}
-			directions.find = function(point) {
-				for(var n = 0; n < this.length; n++) {
-					if (this[n].equals(point)) {
-						return n;
-					}
-					return -1;
-				}
-			};
 			snake.add(new Point(randomInt(0, cols - 1), randomInt(0, rows - 1)));
 			dir = [4];
 		}
@@ -152,7 +144,7 @@
 				newApple();
 			}
 			if (playerBot && playerBot.hook && useBot) {
-				playerBot.hook(tiles.slice(), snake.slice(), apple.clone());
+				playerBot.hook(tiles.slice(), snake.slice(), dir[0], apple.clone());
 			}
 		}
 		function newApple() {
@@ -173,7 +165,7 @@
 			ctx.lineWidth = 1;
 			ctx.strokeStyle = "turquoise";
 			ctx.fillStyle = "black";
-			ctx.font = (canvas.width / 8) + "px Trajan"; // Pfft, I only wish it was Trajan :'(.
+			ctx.font = (canvas.width / 8) + "px Arial";
 			ctx.fillText(finalText, canvas.width / 8, canvas.height / 2 + canvas.width / 32, canvas.width * 3 / 4);
 			ctx.strokeText(finalText, canvas.width / 8, canvas.height / 2 + canvas.width / 32, canvas.width * 3 / 4);
 		}
@@ -201,13 +193,12 @@
 				ctx.rect(snake[snake.length - 1].x * tileSize, snake[snake.length - 1].y * tileSize, tileSize, tileSize);
 				ctx.fill();
 			} else {
-				for (var n = 0; n < snake.length; n++) { // Draw rainbow snake.
+				for (var n = snake.length - 1; n >= 0; n--) { // Draw rainbow snake.
 					ctx.beginPath();
 					ctx.fillStyle = "hsl(" + (~~((n / snake.length) * 361)) + ", 100%, 50%)";
-					ctx.moveTo(snake[n].x * tileSize, snake[n].y * tileSize);
-					ctx.rect(snake[n].x * tileSize, snake[n].y * tileSize, tileSize, tileSize);
+					ctx.moveTo(snake[(snake.length - 1) - n].x * tileSize, snake[(snake.length - 1) - n].y * tileSize);
+					ctx.rect(snake[(snake.length - 1) - n].x * tileSize, snake[(snake.length - 1) - n].y * tileSize, tileSize, tileSize);
 					ctx.fill();
-					console.log(ctx.fillStyle);
 				}
 			}
 			
@@ -228,7 +219,7 @@
 			}
 			
 			ctx.fillStyle = "white"; // Draw score.
-			ctx.font = Math.max((canvas.width / 30), 20) + "px Trajan";
+			ctx.font = Math.max((canvas.width / 30), 20) + "px Arial";
 			ctx.fillText("Score: " + (snake.length - 1), canvas.width / 80, parseInt(ctx.font) * 25 / 30, canvas.width * 39 / 40);
 		}
 		
@@ -253,17 +244,18 @@
 	<script type="text/javascript" name="playerBot">
 	
 		var playerBot = {
-			hook: function(tiles, snake, apple) {
+			hook: function(tiles, snake, dir, apple) {
 				// To-do: make a player bot.
-				var dif = new Point(Math.abs(apple.x - snake[snake.length - 1].x), Math.abs(apple.y - snake[snake.length - 1].y));
-				
-				if (dif.x > dif.y) {
-					
-				} else {
-					
-				}
 			}
 		};
+		function sendMove(point) {
+			for(var n = 0; n < directions.length; n++) {
+				if (directions[n].equals(point)) {
+					break;
+				}
+			}
+			keydown({keyCode: dirToKeyCode[n]});
+		}
 	</script>
 	
 </body>
