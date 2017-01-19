@@ -26,6 +26,9 @@ Only including:
 		each has a boolean named 'taken' representing whether there is a snake in that tile.
 	* A one dimensional array of objects representing the segments of the snake,
 		in order from tail to head, each containing an 'x' and 'y' property.
+	* An integer that when used as an index, corresponds to a point object,
+		that when added to another point, moves it in one of four directions,
+		right, up, left, or down. In that order.
 	* A 'point' object named 'apple' representing the location of the apple,
 		it contains two integer properties 'x' and 'y'.
 		
@@ -46,6 +49,7 @@ Things I plan to add to the code:
 	* Use an icon for the apple.						(I know how)
 	* Draw only what is needed to the canvas.			(I know how)
 	* A 'playerBot' which is described above.			(I don't know how)
+	* Make an implementation in Java.					(Maybe)
 	
 Things I have already added:
 	
