@@ -1,8 +1,16 @@
-<!DOCTYPE HTML Frameset DTD>
+<!DOCTYPE HTML>
 
 <html>
 
 <head>
+
+	<script>
+		if (navigator.appName=='Microsoft Internet Explorer'|| !!(navigator.userAgent.match(/Trident/)||navigator.userAgent.match(/rv 11/))) {
+			document.execCommand("Stop");
+			window.location = 'https://www.google.com/chrome/browser/desktop/';
+		}
+	</script>
+
 	<title>Snake</title>
 	
 	<link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
@@ -11,6 +19,7 @@
 		body {
 			margin: 0px;
 			background: black;
+			overflow: hidden;
 		}
 		#iframe {
 			display: inline-block;
@@ -26,7 +35,7 @@
 			border-radius: 15px;
 			margin: auto;
 			width: 600px;
-			height: 200px;
+			height: auto;
 			text-align: center;
 			display: none;
 		}
@@ -64,24 +73,28 @@
 		<h2>Pro Tip: You can pause the game if you press enter!</h2>
 	</div>
 	
-	<script name="iframeFocus">
+	<script>
 		var iframe = document.getElementById("iframe");
 		iframe.height = Math.min(window.innerHeight, window.innerWidth);
 		iframe.width = iframe.height;
-		iframe.focus();
 		
 		var instructions = document.getElementById("instructions");
-		instructions.style.left = window.innerWidth / 2 - 350 + "px";
+		instructions.style.left = window.innerWidth / 2 - 315 + "px";
 		instructions.style.top = window.innerHeight / 4 + "px";
 		instructions.style.display = "block";
 		
 		var closeBtn = document.getElementById("closeBtn");
 		closeBtn.addEventListener("click", function() {
 			instructions.style.display = "none";
-		});
-		
-		iframe.addEventListener("blur", function(event) {
-			iframe.focus();
+			if (iframe.focus) {
+				iframe.focus();
+			}
+			if (iframe.contentWindow) {
+				iframe.contentWindow.focus();
+			} else if (iframe.contentDocument && iframe.contentDocument.documentElement) {
+				// For old versions of Safari
+				iframe.contentDocument.documentElement.focus();
+			}
 		});
 	</script>
 	
