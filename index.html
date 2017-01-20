@@ -5,7 +5,10 @@
 <head>
 
 	<script>
-		if (navigator.appName=='Microsoft Internet Explorer'|| !!(navigator.userAgent.match(/Trident/)||navigator.userAgent.match(/rv 11/))) {
+		if (navigator.appName == 'Microsoft Internet Explorer' ||
+				!!(navigator.userAgent.match(/Trident/) ||
+				navigator.userAgent.match(/rv 11/)) ||
+				navigator.userAgent.indexOf("Edge") != -1) {
 			document.execCommand("Stop");
 			window.location = 'https://www.google.com/chrome/browser/desktop/';
 		}
