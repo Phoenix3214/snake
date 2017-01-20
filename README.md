@@ -60,5 +60,7 @@ Things I have already added:
 	‣ Styled it a little better.
 	‣ Improved page formatting.
 	‣ Added instructions.
+	‣ A cool font.
+	‣ Multiple death messages.
 	
 This entire document is subject to change at any time. (Especially if I make typos.)
