@@ -10,6 +10,7 @@
 	<style type="text/CSS">
 		body {
 			margin:0px;
+			overflow: hidden;
 		}
 		#canvas {
 			
@@ -55,7 +56,7 @@
 		/* User-definable Variables */
 		var cols = 20;
 		var rows = 20;
-		var tileSize = 30;
+		var tileSize = ~~(Math.min(window.innerWidth, window.innerHeight) / Math.max(cols, rows));
 		var sps = 8; // Steps per second.
 		var useBot = false;
 		var rainbowMode = true;
@@ -72,6 +73,8 @@
 		var keydown;
 		var empty;
 		var finalText;
+		var main;
+		var paused = false;
 		
 		// Rainbow tables:
 		var directions = [new Point(1, 0), new Point(0, -1), new Point(-1, 0), new Point(0, 1), new Point(0, 0)]; // Right, up, left, right, none.
@@ -79,6 +82,19 @@
 		var dirToKeyCode = [39, 38, 37, 40];
 		
 		window.addEventListener("keydown", keydown = function(event) { // Get user input.
+			if (event.keyCode == 13) {
+				if (finalText) {
+					window.location.reload();
+					return;
+				} else if (!paused) {
+					clearInterval(loop);
+					paused = true;
+					draw();
+				} else {
+					loop = setInterval(main, ~~(1000 / sps));
+					paused = false;
+				}
+			}
 			var tmpDir = keyCodeToDir[event.keyCode+""]; // Convert keyCode to string, then a direction.
 			if (tmpDir != null && tmpDir != dir[dir.length - 1] && (tmpDir + 2) % 4 != dir[dir.length - 1]) {
 				dir.push(tmpDir);
@@ -124,7 +140,7 @@
 				dir.splice(0, 1);
 			}
 			if (snake.length == cols * rows ){//|| Math.random() < 0.005) {
-				finalText = "You won! :D";
+				finalText = "You Won! :D";
 				return;
 			}
 			var next = snake[snake.length - 1].clone().sum(directions[dir[0]]);
@@ -134,7 +150,7 @@
 				}
 			}
 			if (!next.isLimitedBy(0, 0, cols - 1, rows - 1) || bitItself) {
-				finalText = "You lost! :c";
+				finalText = "You Lost! :c";
 				return;
 			}
 			snake.add(next);
@@ -160,14 +176,11 @@
 		function randomInt(min, max) {
 			return Math.floor(Math.random() * (max - min + 1)) + min;
 		}
-		function drawFinalText() {
-			clearInterval(loop);
-			ctx.lineWidth = 1;
+		function drawText(string, x, y, maxWidth) {
 			ctx.strokeStyle = "turquoise";
 			ctx.fillStyle = "black";
-			ctx.font = (canvas.width / 8) + "px Arial";
-			ctx.fillText(finalText, canvas.width / 8, canvas.height / 2 + canvas.width / 32, canvas.width * 3 / 4);
-			ctx.strokeText(finalText, canvas.width / 8, canvas.height / 2 + canvas.width / 32, canvas.width * 3 / 4);
+			ctx.fillText(string, x, y, maxWidth);
+			ctx.strokeText(string, x, y, maxWidth);
 		}
 		function draw() { // Draw entire frame.
 			ctx.beginPath(); // Clear canvas.
@@ -195,7 +208,7 @@
 			} else {
 				for (var n = snake.length - 1; n >= 0; n--) { // Draw rainbow snake.
 					ctx.beginPath();
-					ctx.fillStyle = "hsl(" + (~~((n / snake.length) * 361)) + ", 100%, 50%)";
+					ctx.fillStyle = "hsl(" + ~~((n / snake.length) * 361) + ", 100%, 50%)";
 					ctx.moveTo(snake[(snake.length - 1) - n].x * tileSize, snake[(snake.length - 1) - n].y * tileSize);
 					ctx.rect(snake[(snake.length - 1) - n].x * tileSize, snake[(snake.length - 1) - n].y * tileSize, tileSize, tileSize);
 					ctx.fill();
@@ -214,13 +227,30 @@
 			}
 			ctx.stroke();
 			
+			if (paused) {
+				ctx.font = (canvas.width / 6) + "px Arial";
+				var offset = (canvas.width - ctx.measureText("paused").width) / 2;
+				drawText("paused", offset, canvas.height / 2 + canvas.width / 32);
+				ctx.font = (canvas.width / 15) + "px Arial";
+				var offset = (canvas.width - ctx.measureText("press enter to resume").width) / 2;
+				drawText("press enter to resume", offset, canvas.height / 2 + canvas.width / 8);
+			}
+			
 			if (finalText) { // Draw final text. (win or lose).
-				drawFinalText();
+				clearInterval(loop);
+				ctx.lineWidth = 2;
+				ctx.font = (canvas.width / 6) + "px Arial";
+				var offset = (canvas.width - ctx.measureText(finalText).width) / 2;
+				drawText(finalText, offset, canvas.height / 2 + canvas.width / 32);
+				ctx.lineWidth = 1;
+				ctx.font = (canvas.width / 15) + "px Arial";
+				var offset = (canvas.width - ctx.measureText("press enter to respawn").width) / 2;
+				drawText("press enter to respawn", offset, canvas.height / 2 + canvas.width / 10);
 			}
 			
 			ctx.fillStyle = "white"; // Draw score.
-			ctx.font = Math.max((canvas.width / 30), 20) + "px Arial";
-			ctx.fillText("Score: " + (snake.length - 1), canvas.width / 80, parseInt(ctx.font) * 25 / 30, canvas.width * 39 / 40);
+			ctx.font = (((canvas.width / 30) > 20) ? (canvas.width / 30) : 20) + "px Arial";
+			ctx.fillText("Score: " + (snake.length - 1), 10, canvas.height - 10);
 		}
 		
 		/* Main */
@@ -229,14 +259,9 @@
 		initSnake();
 		newApple();
 		draw();
-		loop = setInterval(function() {
-			try { // Just for debuggging purposes.
+		loop = setInterval(main = function() {
 				step();
 				draw();
-			} catch (err) {
-				clearInterval(loop);
-				throw err;
-			}
 		}, 1000 / sps);
 		/* End Main */
 	</script>
