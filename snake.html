@@ -6,13 +6,33 @@
 <head>
 
 	<title>Snake</title>
+	
+	<link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
 
 	<style type="text/CSS">
 		body {
 			margin:0px;
+			overflow: hidden;
 		}
 		#canvas {
 			
+		}
+		
+		/* latin-ext */
+		@font-face {
+			font-family: 'PressStart2P';
+			font-style: normal;
+			font-weight: 400;
+			src: local('Press Start 2P Regular'), local('PressStart2P-Regular'), url(https://fonts.gstatic.com/s/pressstart2p/v5/8Lg6LX8-ntOHUQnvQ0E7o4HIgCyF_r7uhNjO5r5pEXE.woff2) format('woff2');
+			unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+		}
+		/* latin */
+		@font-face {
+			font-family: 'PressStart2P';
+			font-style: normal;
+			font-weight: 400;
+			src: local('Press Start 2P Regular'), local('PressStart2P-Regular'), url(https://fonts.gstatic.com/s/pressstart2p/v5/8Lg6LX8-ntOHUQnvQ0E7o08SWvhA5BcWCS8xVZDIH7E.woff2) format('woff2');
+			unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
 		}
 	</style>
 </head>
@@ -55,7 +75,7 @@
 		/* User-definable Variables */
 		var cols = 20;
 		var rows = 20;
-		var tileSize = 30;
+		var tileSize = ~~(Math.min(window.innerWidth, window.innerHeight) / Math.max(cols, rows));
 		var sps = 8; // Steps per second.
 		var useBot = false;
 		var rainbowMode = true;
@@ -72,13 +92,36 @@
 		var keydown;
 		var empty;
 		var finalText;
+		var main;
+		var paused = false;
 		
 		// Rainbow tables:
 		var directions = [new Point(1, 0), new Point(0, -1), new Point(-1, 0), new Point(0, 1), new Point(0, 0)]; // Right, up, left, right, none.
 		var keyCodeToDir = {"37": 2, "38": 1, "39": 0, "40": 3, "68": 0, "87": 1, "65": 2, "83": 3}; // leftArrow, upArrow, rightArrow, downArrow, d, w, a, s.
 		var dirToKeyCode = [39, 38, 37, 40];
 		
+		var loseMessages = ["ouch!", "that's a headache", "now you're fertiziler", "oh noes!", "R.I.P.", "hasta la vista snakey", "you lost! :(", "WASTED",
+			"*Windows blue screen*", "keep your day job", "blame lag", "why even bother?", "one more!", "so close! not."];
+		
 		window.addEventListener("keydown", keydown = function(event) { // Get user input.
+			if (event.keyCode == 13) {
+				if (finalText) {
+					finalText = null;
+					initTiles();
+					initSnake();
+					newApple();
+					draw();
+					loop = setInterval(main, ~~(1000 / sps));
+					return;
+				} else if (!paused) {
+					clearInterval(loop);
+					paused = true;
+					draw();
+				} else {
+					loop = setInterval(main, ~~(1000 / sps));
+					paused = false;
+				}
+			}
 			var tmpDir = keyCodeToDir[event.keyCode+""]; // Convert keyCode to string, then a direction.
 			if (tmpDir != null && tmpDir != dir[dir.length - 1] && (tmpDir + 2) % 4 != dir[dir.length - 1]) {
 				dir.push(tmpDir);
@@ -124,7 +167,7 @@
 				dir.splice(0, 1);
 			}
 			if (snake.length == cols * rows ){//|| Math.random() < 0.005) {
-				finalText = "You won! :D";
+				finalText = "You Won! :D";
 				return;
 			}
 			var next = snake[snake.length - 1].clone().sum(directions[dir[0]]);
@@ -134,7 +177,7 @@
 				}
 			}
 			if (!next.isLimitedBy(0, 0, cols - 1, rows - 1) || bitItself) {
-				finalText = "You lost! :c";
+				finalText = loseMessages[~~(Math.random() * loseMessages.length)];
 				return;
 			}
 			snake.add(next);
@@ -160,14 +203,19 @@
 		function randomInt(min, max) {
 			return Math.floor(Math.random() * (max - min + 1)) + min;
 		}
-		function drawFinalText() {
-			clearInterval(loop);
-			ctx.lineWidth = 1;
+		function drawText(string, x, y, maxWidth) {
 			ctx.strokeStyle = "turquoise";
 			ctx.fillStyle = "black";
-			ctx.font = (canvas.width / 8) + "px Arial";
-			ctx.fillText(finalText, canvas.width / 8, canvas.height / 2 + canvas.width / 32, canvas.width * 3 / 4);
-			ctx.strokeText(finalText, canvas.width / 8, canvas.height / 2 + canvas.width / 32, canvas.width * 3 / 4);
+			ctx.fillText(string, x, y, maxWidth);
+			ctx.strokeText(string, x, y, maxWidth);
+		}
+		function setFont(string, size) {
+			ctx.font = size + "px PressStart2P";
+			while (ctx.measureText(string).width > canvas.width) {
+				size--;
+				ctx.font = size + "px PressStart2P";
+			}
+			return size;
 		}
 		function draw() { // Draw entire frame.
 			ctx.beginPath(); // Clear canvas.
@@ -195,7 +243,7 @@
 			} else {
 				for (var n = snake.length - 1; n >= 0; n--) { // Draw rainbow snake.
 					ctx.beginPath();
-					ctx.fillStyle = "hsl(" + (~~((n / snake.length) * 361)) + ", 100%, 50%)";
+					ctx.fillStyle = "hsl(" + ~~((n / snake.length) * 361) + ", 100%, 50%)";
 					ctx.moveTo(snake[(snake.length - 1) - n].x * tileSize, snake[(snake.length - 1) - n].y * tileSize);
 					ctx.rect(snake[(snake.length - 1) - n].x * tileSize, snake[(snake.length - 1) - n].y * tileSize, tileSize, tileSize);
 					ctx.fill();
@@ -214,13 +262,29 @@
 			}
 			ctx.stroke();
 			
+			if (paused) {
+				ctx.font = (canvas.width / 10) + "px PressStart2P";
+				var offset = (canvas.width - ctx.measureText("paused").width) / 2;
+				drawText("paused", offset, canvas.height / 2 + canvas.width / 32);
+				ctx.font = (canvas.width / 25) + "px PressStart2P";
+				var offset = (canvas.width - ctx.measureText("press enter to resume").width) / 2;
+				drawText("press enter to resume", offset, canvas.height / 2 + canvas.width / 8);
+			}
+			
 			if (finalText) { // Draw final text. (win or lose).
-				drawFinalText();
+				clearInterval(loop);
+				setFont(finalText, (canvas.width / 14));
+				var offset = ((canvas.width - ctx.measureText(finalText).width) / 2);
+				drawText(finalText, offset, canvas.height / 2 + canvas.width / 32);
+				
+				ctx.font = (canvas.width / 25) + "px PressStart2P";
+				var offset = ((canvas.width - ctx.measureText("press enter to respawn").width) / 2);
+				drawText("press enter to respawn", offset, canvas.height / 2 + canvas.width / 10);
 			}
 			
 			ctx.fillStyle = "white"; // Draw score.
-			ctx.font = Math.max((canvas.width / 30), 20) + "px Arial";
-			ctx.fillText("Score: " + (snake.length - 1), canvas.width / 80, parseInt(ctx.font) * 25 / 30, canvas.width * 39 / 40);
+			ctx.font = (((canvas.width / 50) > 20) ? (canvas.width / 30) : 20) + "px PressStart2P";
+			ctx.fillText("Score: " + (snake.length - 1), 10, canvas.height - 10);
 		}
 		
 		/* Main */
@@ -229,14 +293,9 @@
 		initSnake();
 		newApple();
 		draw();
-		loop = setInterval(function() {
-			try { // Just for debuggging purposes.
+		loop = setInterval(main = function() {
 				step();
 				draw();
-			} catch (err) {
-				clearInterval(loop);
-				throw err;
-			}
 		}, 1000 / sps);
 		/* End Main */
 	</script>
