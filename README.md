@@ -7,7 +7,7 @@ Try to beat my highscore of 84!
 
 This project started two years ago when I made a snake game while learning JavaScript.
 
-Recently I looked at the code the 2 years younger version of myself made, and cringed.
+Recently I looked at the code I had written, and cringed.
 So I made a fresh version of the game 'snake' with my current knowledge.
 
 The fresh version is called 'snake.html'.
@@ -16,7 +16,7 @@ The old version is called 'SnakeGameOld.html'.
 	The code has not been touched for two years, and will never be updated.
 
 The end goal is to develop an algorithm that will beat the snake game everytime.
-	(Probably with A*)
+	(With A*)
 
 The restrictions to the algorithm are similar to a humans,
 in the sense that the information given to it is limited.
