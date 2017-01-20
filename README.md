@@ -1,6 +1,6 @@
 # Snake
 
-Want to play snake? Go ahead! ---> [Take me to it.](https://tombez.github.io/snake/snake.html)
+Want to play snake? Go ahead! ---> [Take me to it.](https://tombez.github.io/snake/)
 Try to beat my highscore of 84!
 
 ### --- 17-1-2017 D-M-Y ---
