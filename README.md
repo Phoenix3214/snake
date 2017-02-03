@@ -1,7 +1,7 @@
 # Snake
 
 Want to play snake? Go ahead! ---> [Take me to it.](https://tombez.github.io/snake/)
-Try to beat my highscore of 84!
+Try to beat my highscore of 86!
 
 ### --- 17-1-2017 D-M-Y ---
 
@@ -37,30 +37,17 @@ In addition, it is only allowed to affect the game by simulating user-input.
 # Checklist
 Things I plan to add to the code:
 
-	‣ A settings panel for the user,					(I know how)
-		possible variables they could change:
+	‣ A settings panel for the user, possible variables they could change:
 
 		‣ Game speed.
 		‣ Number of columns.
 		‣ Number of rows.
 		‣ Tile size.
-		‣ Colors. (Maybe)
+		‣ Colors.
 
-	‣ Use an icon for the apple.						(I know how)
-	‣ Draw only what is needed to the canvas.			(I know how)
-	‣ A 'playerBot' which is described above.			(I don't know how)
-	‣ Make an implementation in Java.					(Maybe)
-	
-Things I have already added:
-	
-	‣ Improved user-input to feel more responsive.
-	‣ Made a 'rainbow mode', which draws the snake rainbow colored.
-	‣ Simpler code from the original two years ago.
-	‣ Removed sound effects. Ew.
-	‣ Styled it a little better.
-	‣ Improved page formatting.
-	‣ Added instructions.
-	‣ A cool font.
-	‣ Multiple death messages.
+	‣ Use an icon for the apple.
+	‣ Draw only what is needed to the canvas.
+	‣ A 'playerBot' which is described above.
+	‣ Make an implementation in Java.
 	
 This entire document is subject to change at any time. (Especially if I make typos.)

@@ -73,8 +73,8 @@
 		var rainbowMode = true;
 		/* End User-definable Variables */
 		
-		var canvas;
-		var ctx;
+		var canvas = document.getElementById("canvas");
+		var ctx = canvas.getContext("2d");;
 		var tiles;
 		var snake;
 		var dir;
@@ -89,13 +89,18 @@
 		// Rainbow tables:
 		var directions = [new Point(1, 0), new Point(0, -1), new Point(-1, 0), new Point(0, 1), new Point(0, 0)]; // Right, up, left, right, none.
 		var keyCodeToDir = {"37": 2, "38": 1, "39": 0, "40": 3, "68": 0, "87": 1, "65": 2, "83": 3}; // leftArrow, upArrow, rightArrow, downArrow, d, w, a, s.
-		var dirToKeyCode = [39, 38, 37, 40];
+		var dirToKeyCode = [39, 38, 37, 40]; // Right, up, left, down.
 		
-		var loseMessages = ["ouch!", "that's a headache", "now you're fertiziler", "oh noes!", "R.I.P.", "hasta la vista snakey", "you lost! :(", "WASTED",
-			"*Windows blue screen*", "keep your day job", "blame lag", "why even bother?", "one more!", "so close! not."];
+		var loseMessages = ["ouch!", "that's a headache", "now you're fertilizer", "oh noes!", "R.I.P.", "hasta la vista snakey", "you lost! :(", "WASTED",
+			"*Windows blue screen*", "keep your day job", "blame lag", "why even bother?", "one more!", "so close! not.", "'clutch'"];
 		
+		window.addEventListener("resize", function() {
+			tileSize = ~~(Math.min(window.innerWidth, window.innerHeight) / Math.max(cols, rows));
+			initCanvas();
+			draw();
+		});
 		window.addEventListener("keydown", keydown = function(event) { // Get user input.
-			if (event.keyCode == 13) {
+			if (event.keyCode == 13 || event.keyCode == 32) {
 				if (finalText) {
 					finalText = null;
 					initTiles();
@@ -103,7 +108,6 @@
 					newApple();
 					draw();
 					loop = setInterval(main, ~~(1000 / sps));
-					return;
 				} else if (!paused) {
 					clearInterval(loop);
 					paused = true;
@@ -112,6 +116,7 @@
 					loop = setInterval(main, ~~(1000 / sps));
 					paused = false;
 				}
+				return;
 			}
 			var tmpDir = keyCodeToDir[event.keyCode+""]; // Convert keyCode to string, then a direction.
 			if (tmpDir != null && tmpDir != dir[dir.length - 1] && (tmpDir + 2) % 4 != dir[dir.length - 1]) {
@@ -119,15 +124,13 @@
 			}
 		});
 		function initCanvas() { // Setup canvas with context and dimensions.
-			canvas = document.getElementById("canvas");
 			canvas.width = cols * tileSize;
 			canvas.height = rows * tileSize;
-			ctx = canvas.getContext("2d");
 		}
 		function initTiles() { // Set 'tiles' to a 2 dimensional array, and fill it with objects.
-			tiles = [];
+			tiles = new Array(cols);
 			for (var x = 0; x < cols; x++) {
-				tiles[x] = [];
+				tiles[x] = new Array(rows);
 				for (var y = 0; y < rows; y++) {
 					tiles[x][y] = {};
 				}
@@ -202,7 +205,7 @@
 		}
 		function setFont(string, size) {
 			ctx.font = size + "px PressStart2P";
-			while (ctx.measureText(string).width > canvas.width) {
+			while (ctx.measureText(string).width + 20 > canvas.width) {
 				size--;
 				ctx.font = size + "px PressStart2P";
 			}
@@ -233,11 +236,8 @@
 				ctx.fill();
 			} else {
 				for (var n = snake.length - 1; n >= 0; n--) { // Draw rainbow snake.
-					ctx.beginPath();
 					ctx.fillStyle = "hsl(" + ~~((n / snake.length) * 361) + ", 100%, 50%)";
-					ctx.moveTo(snake[(snake.length - 1) - n].x * tileSize, snake[(snake.length - 1) - n].y * tileSize);
-					ctx.rect(snake[(snake.length - 1) - n].x * tileSize, snake[(snake.length - 1) - n].y * tileSize, tileSize, tileSize);
-					ctx.fill();
+					ctx.fillRect(snake[(snake.length - 1) - n].x * tileSize, snake[(snake.length - 1) - n].y * tileSize, tileSize, tileSize);
 				}
 			}
 			
@@ -257,20 +257,20 @@
 				ctx.font = (canvas.width / 10) + "px PressStart2P";
 				var offset = (canvas.width - ctx.measureText("paused").width) / 2;
 				drawText("paused", offset, canvas.height / 2 + canvas.width / 32);
-				ctx.font = (canvas.width / 25) + "px PressStart2P";
-				var offset = (canvas.width - ctx.measureText("press enter to resume").width) / 2;
-				drawText("press enter to resume", offset, canvas.height / 2 + canvas.width / 8);
+				ctx.font = (canvas.width / 32) + "px PressStart2P";
+				var offset = (canvas.width - ctx.measureText("press enter or space to resume").width) / 2;
+				drawText("press enter or space to resume", offset, canvas.height * 19 / 32);
 			}
 			
-			if (finalText) { // Draw final text. (win or lose).
+			if (finalText) { // Draw final text.
 				clearInterval(loop);
 				setFont(finalText, (canvas.width / 14));
 				var offset = ((canvas.width - ctx.measureText(finalText).width) / 2);
-				drawText(finalText, offset, canvas.height / 2 + canvas.width / 32);
+				drawText(finalText, offset + 10, canvas.height / 2 + canvas.width / 32);
 				
-				ctx.font = (canvas.width / 25) + "px PressStart2P";
-				var offset = ((canvas.width - ctx.measureText("press enter to respawn").width) / 2);
-				drawText("press enter to respawn", offset, canvas.height / 2 + canvas.width / 10);
+				ctx.font = (canvas.width / 32) + "px PressStart2P";
+				var offset = ((canvas.width - ctx.measureText("press enter or space to respawn").width) / 2);
+				drawText("press enter or space to respawn", offset, canvas.height * 6 / 10);
 			}
 			
 			ctx.fillStyle = "white"; // Draw score.

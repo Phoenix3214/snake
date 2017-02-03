@@ -74,20 +74,22 @@
 		<br>
 		<h2>Use the arrow keys or WASD to move your snake.</h2>
 		<br/>
-		<h2>Pro Tip: You can pause the game if you press enter!</h2>
+		<h2>Pro Tip: You can pause the game if you press enter or space!</h2>
 	</div>
 	
 	<script>
 		var iframe = document.getElementById("iframe");
-		iframe.height = Math.min(window.innerHeight, window.innerWidth);
-		iframe.width = iframe.height;
-		
 		var instructions = document.getElementById("instructions");
-		instructions.style.left = window.innerWidth / 2 - 315 + "px";
-		instructions.style.top = window.innerHeight / 4 + "px";
-		instructions.style.display = "block";
-		
 		var closeBtn = document.getElementById("closeBtn");
+		
+		window.addEventListener("resize", windowResize = function() {
+			iframe.height = Math.min(window.innerHeight, window.innerWidth);
+			iframe.width = iframe.height;
+			
+			instructions.style.left = window.innerWidth / 2 - 315 + "px";
+			instructions.style.top = window.innerHeight / 4 + "px";
+		});
+		
 		closeBtn.addEventListener("click", function() {
 			instructions.style.display = "none";
 			if (iframe.focus) {
@@ -100,6 +102,9 @@
 				iframe.contentDocument.documentElement.focus();
 			}
 		});
+		
+		windowResize();
+		instructions.style.display = "block";
 	</script>
 	
 </body>
