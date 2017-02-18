@@ -3,7 +3,7 @@ var cols = 20;
 var rows = 20;
 var tileSize = ~~(Math.min(window.innerWidth, window.innerHeight) / Math.max(cols, rows));
 var sps = 10; // Steps per second.
-var useBot = false;
+var useBot = true;
 var rainbowMode = true;
 /* End User-definable Variables */
 
@@ -188,6 +188,7 @@ function draw() { // Draw entire frame.
 	}
 	
 	if (finalText) { // Draw final text.
+		ctx.lineWidth = 2;
 		clearInterval(loop);
 		setFont(finalText, (canvas.width / 14));
 		var offset = ((canvas.width - ctx.measureText(finalText).width) / 2);
