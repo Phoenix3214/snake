@@ -17,7 +17,7 @@ function Bot(_width, _height) {
 	}
 
 	this.makeMove = function(snake, apple) {
-		console.log(snake);
+		//console.log(snake);
 		if (!this.path.length) { // if there are no pre-calculated moves.
 		
 			var tails = []; // init tails array.
@@ -47,7 +47,7 @@ function Bot(_width, _height) {
 				tails.push(snake.shift()); // remove snake tail, and keep it for later.
 			}
 		}
-		console.log(this.path, snake.length);
+		//console.log(this.path, snake.length);
 		return this.path.shift(); // move snake.
 	}
 
