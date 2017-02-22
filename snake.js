@@ -37,7 +37,7 @@ window.addEventListener("resize", function() {
 	draw();
 });
 window.addEventListener("keydown", keydown = function(event) { // Get user input.
-	if([32, 37, 38, 39, 40].indexOf(event.keyCode) != -1) { // stop firefox from scrolling the page.
+	if(event.preventDefault && [32, 37, 38, 39, 40].indexOf(event.keyCode) != -1) { // stop firefox from scrolling the page.
         event.preventDefault();
     }
 	if (event.keyCode == 13 || event.keyCode == 32) {

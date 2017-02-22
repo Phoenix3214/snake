@@ -24,40 +24,22 @@
 			margin: 0px;
 			background: black;
 			overflow: hidden;
-		}
-		#iframe {
-			display: inline-block;
+			text-align: center;
 		}
 		#instructions {
 			font-family: "Press Start 2P", cursive;
-			font-size: 16px;
-			padding: 15px;
+			padding: 10px;
 			color: white;
 			position: absolute;
 			background: black;
 			opacity: 0.8;
 			border-radius: 15px;
-			margin: auto;
-			width: 600px;
+			width: 50%;
 			height: auto;
 			text-align: center;
-			display: none;
 		}
-		#closeBtn {
-			color: white;
-			position: absolute;
-			display: inline;
-			cursor: pointer;
-			left: 590px;
-			top: 15px;
-		}
-		.noselect {
-			-webkit-touch-callout: none; /* iOS Safari */
-			-webkit-user-select: none; /* Safari*/
-			-khtml-user-select: none; /* Konqueror */
-			-moz-user-select: none; /* Firefox */
-			-ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+		#iframe {
+			margin: auto;
 		}
 	</style>
 	
@@ -65,32 +47,30 @@
 
 <body>
 
-	<center>
-		<iframe id="iframe" src="./snake.html" frameborder=0></iframe>
-	</center>
+	<iframe id="iframe" src="./snake.html" frameborder=0></iframe>
 	
 	<div id="instructions">
-		<div id="closeBtn">X</div>
-		<br>
 		<h2>Use the arrow keys or WASD to move your snake.</h2>
-		<br/>
+		<br>
 		<h2>Pro Tip: You can pause the game if you press enter or space!</h2>
 	</div>
 	
 	<script>
 		var iframe = document.getElementById("iframe");
 		var instructions = document.getElementById("instructions");
-		var closeBtn = document.getElementById("closeBtn");
+		var resize;
 		
-		window.addEventListener("resize", windowResize = function() {
+		window.addEventListener("resize", resize = function() {
 			iframe.height = Math.min(window.innerHeight, window.innerWidth);
 			iframe.width = iframe.height;
 			
-			instructions.style.left = window.innerWidth / 2 - 315 + "px";
-			instructions.style.top = window.innerHeight / 4 + "px";
+			instructions.style.left = (window.innerWidth - instructions.offsetWidth) / 2 + "px";
+			instructions.style.top = (window.innerHeight - instructions.offsetHeight) / 2 + "px";
+			console.log((window.innerWidth - instructions.offsetWidth) / 2 + "px", instructions.style.left);
 		});
+		resize();
 		
-		closeBtn.addEventListener("click", function() {
+		setTimeout(function() {
 			instructions.style.display = "none";
 			if (iframe.focus) {
 				iframe.focus();
@@ -101,10 +81,7 @@
 				// For old versions of Safari
 				iframe.contentDocument.documentElement.focus();
 			}
-		});
-		
-		windowResize();
-		instructions.style.display = "block";
+		}, 5000);
 	</script>
 	
 </body>
