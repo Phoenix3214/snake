@@ -137,12 +137,9 @@ function draw() { // Draw entire frame.
 	ctx.fill();
 	
 	if (rainbowMode) {
-		var delta;
 		for (var n = snake.length - 1; n >= 0; n--) { // Draw rainbow snake.
-			delta = (n / snake.length) / 3;
-			//console.log(delta);
 			ctx.fillStyle = "hsl(" + ~~((n / snake.length) * 361) + ", 100%, 50%)";
-			ctx.fillRect((snake[(snake.length - 1) - n].x + delta) * tileSize, (snake[(snake.length - 1) - n].y + delta) * tileSize, tileSize * (1 - delta * 2), tileSize * (1 - delta * 2));
+			ctx.fillRect((snake[(snake.length - 1) - n].x) * tileSize, (snake[(snake.length - 1) - n].y) * tileSize, tileSize, tileSize);
 		}
 	} else {
 		ctx.beginPath(); // Draw snake.
@@ -170,22 +167,12 @@ function draw() { // Draw entire frame.
 	}
 	ctx.stroke();
 	
-	// Bring attention to the head:
-	//ctx.strokeStyle = "lime";
-	// //ctx.lineWidth = 2; // double commented out. XD
-	//ctx.strokeRect(snake[snake.length - 1].x * tileSize, snake[snake.length - 1].y * tileSize, tileSize, tileSize);
-	
-	/* // For fun:
-	ctx.fillStyle = "black";
-	for (var n = 0; n < snake.length - 1; n++) { // just to see what it would look like...
-		ctx.fillRect((snake[n].x + 0.3) * tileSize, (snake[n].y + 0.3) * tileSize, tileSize * 0.4, tileSize * 0.4);
-	}*/
-	
 	if (paused) {
 		ctx.lineWidth = 2;
 		ctx.font = (canvas.width / 10) + "px PressStart2P";
 		var offset = (canvas.width - ctx.measureText("paused").width) / 2;
 		drawText("paused", offset, canvas.height / 2 + canvas.width / 32);
+		ctx.lineWidth = 1;
 		ctx.font = (canvas.width / 32) + "px PressStart2P";
 		var offset = (canvas.width - ctx.measureText("press enter or space to resume").width) / 2;
 		drawText("press enter or space to resume", offset, canvas.height * 19 / 32);
@@ -198,6 +185,7 @@ function draw() { // Draw entire frame.
 		var offset = ((canvas.width - ctx.measureText(finalText).width) / 2);
 		drawText(finalText, offset + 10, canvas.height / 2 + canvas.width / 32);
 		
+		ctx.lineWidth = 1;
 		ctx.font = (canvas.width / 32) + "px PressStart2P";
 		var offset = ((canvas.width - ctx.measureText("press enter or space to respawn").width) / 2);
 		drawText("press enter or space to respawn", offset, canvas.height * 6 / 10);
@@ -217,7 +205,7 @@ if (useBot) {
 }
 draw();
 loop = setInterval(main = function() {
-		step();
-		draw();
+	step();
+	draw();
 }, 1000 / sps);
 /* End Main */
