@@ -5,16 +5,16 @@ body {
     text-align: center;
 }
 #instructions {
-    font-family: "Press Start 2P", cursive;
+    font-family: "Press Start 2P", "Trebuchet MS";
     padding: 10px;
     color: white;
     position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     background: black;
     opacity: 0.8;
     border-radius: 15px;
-    width: 50%;
-    height: auto;
-    text-align: center;
 }
 #iframe {
     margin: auto;
