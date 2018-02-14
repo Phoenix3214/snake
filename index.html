@@ -4,85 +4,85 @@
 
 <head>
 
-	<script>
-		if (navigator.appName == 'Microsoft Internet Explorer' ||
-				!!(navigator.userAgent.match(/Trident/) ||
-				navigator.userAgent.match(/rv 11/)) ||
-				navigator.userAgent.indexOf("Edge") != -1) {
-			document.execCommand("Stop");
-			window.location = 'https://www.google.com/chrome/browser/desktop/';
-		}
-	</script>
+    <script>
+        if (navigator.appName == 'Microsoft Internet Explorer' ||
+                !!(navigator.userAgent.match(/Trident/) ||
+                navigator.userAgent.match(/rv 11/)) ||
+                navigator.userAgent.indexOf("Edge") != -1) {
+            document.execCommand("Stop");
+            window.location = 'https://www.google.com/chrome/browser/desktop/';
+        }
+    </script>
 
-	<title>Snake</title>
-	<link rel="shortcut icon" href="./favicon.ico" type="image/x-icon"/>
-	
-	<link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
-	
-	<style type="text/CSS">
-		body {
-			margin: 0px;
-			background: black;
-			overflow: hidden;
-			text-align: center;
-		}
-		#instructions {
-			font-family: "Press Start 2P", cursive;
-			padding: 10px;
-			color: white;
-			position: absolute;
-			background: black;
-			opacity: 0.8;
-			border-radius: 15px;
-			width: 50%;
-			height: auto;
-			text-align: center;
-		}
-		#iframe {
-			margin: auto;
-		}
-	</style>
-	
+    <title>Snake</title>
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon"/>
+
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+
+    <style type="text/CSS">
+        body {
+            margin: 0px;
+            background: black;
+            overflow: hidden;
+            text-align: center;
+        }
+        #instructions {
+            font-family: "Press Start 2P", cursive;
+            padding: 10px;
+            color: white;
+            position: absolute;
+            background: black;
+            opacity: 0.8;
+            border-radius: 15px;
+            width: 50%;
+            height: auto;
+            text-align: center;
+        }
+        #iframe {
+            margin: auto;
+        }
+    </style>
+
 </head>
 
 <body>
 
-	<iframe id="iframe" src="./snake.html" frameborder=0></iframe>
-	
-	<div id="instructions">
-		<h2>Use the arrow keys or WASD to move your snake.</h2>
-		<br>
-		<h2>Pro Tip: You can pause the game if you press enter or space!</h2>
-	</div>
-	
-	<script>
-		var iframe = document.getElementById("iframe");
-		var instructions = document.getElementById("instructions");
-		var resize;
-		
-		window.addEventListener("resize", resize = function() {
-			iframe.height = Math.min(window.innerHeight, window.innerWidth);
-			iframe.width = iframe.height;
-			
-			instructions.style.left = (window.innerWidth - instructions.offsetWidth) / 2 + "px";
-			instructions.style.top = (window.innerHeight - instructions.offsetHeight) / 2 + "px";
-		});
-		resize();
-		
-		setTimeout(function() {
-			instructions.style.display = "none";
-			if (iframe.focus) {
-				iframe.focus();
-			}
-			if (iframe.contentWindow) {
-				iframe.contentWindow.focus();
-			} else if (iframe.contentDocument && iframe.contentDocument.documentElement) {
-				// For old versions of Safari
-				iframe.contentDocument.documentElement.focus();
-			}
-		}, 5000);
-	</script>
-	
+    <iframe id="iframe" src="./snake.html" frameborder=0></iframe>
+
+    <div id="instructions">
+        <h2>Use the arrow keys or WASD to move your snake.</h2>
+        <br>
+        <h2>Pro Tip: You can pause the game if you press enter or space!</h2>
+    </div>
+
+    <script>
+        var iframe = document.getElementById("iframe");
+        var instructions = document.getElementById("instructions");
+        var resize;
+
+        window.addEventListener("resize", resize = function() {
+            iframe.height = Math.min(window.innerHeight, window.innerWidth);
+            iframe.width = iframe.height;
+
+            instructions.style.left = (window.innerWidth - instructions.offsetWidth) / 2 + "px";
+            instructions.style.top = (window.innerHeight - instructions.offsetHeight) / 2 + "px";
+        });
+        resize();
+
+        setTimeout(function() {
+            instructions.style.display = "none";
+            if (iframe.focus) {
+                iframe.focus();
+            }
+            if (iframe.contentWindow) {
+                iframe.contentWindow.focus();
+            } else if (iframe.contentDocument && iframe.contentDocument.documentElement) {
+                // For old versions of Safari
+                iframe.contentDocument.documentElement.focus();
+            }
+        }, 5000);
+    </script>
+
 </body>
 
 </html>
