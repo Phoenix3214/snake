@@ -3,12 +3,11 @@ var cols = 20;
 var rows = 20;
 var tileSize = ~~(Math.min(window.innerWidth, window.innerHeight) / Math.max(cols, rows));
 var sps = 10; // Steps per second.
-var useBot = false;
 var rainbowMode = true;
 /* End User-definable Variables */
 
-var canvas = document.getElementById("canvas");
-var ctx = canvas.getContext("2d");
+var canvas;
+var ctx;
 var snake;
 var dir;
 var loop;
@@ -19,9 +18,6 @@ var finalText;
 var main;
 var paused = false;
 var deathCount = 0;
-var bot;
-
-var analme = false;
 
 // Rainbow tables:
 var directions = [new Point(1, 0), new Point(0, -1), new Point(-1, 0), new Point(0, 1), new Point(0, 0)]; // Right, up, left, down, none.
@@ -94,9 +90,6 @@ function step() {
     } else {
         finalText = "You Won! :D";
         return;
-    }
-    if (useBot) {
-        keydown({keyCode: dirToKeyCode[bot.makeMove(snake.slice(), apple.clone())]});
     }
 }
 function newApple() {
@@ -196,16 +189,15 @@ function draw() { // Draw entire frame.
     ctx.fillText("Score: " + (snake.length - 1), 5, canvas.height - 5);
 }
 
-/* Main */
-initCanvas();
-initSnake();
-newApple();
-if (useBot) {
-    bot = new Bot(cols, rows);
-}
-draw();
-loop = setInterval(main = function() {
-    step();
+document.addEventListener("DOMContentLoaded", () => {
+    canvas = document.getElementById("canvas");
+    ctx = canvas.getContext("2d");
+    initCanvas();
+    initSnake();
+    newApple();
     draw();
-}, 1000 / sps);
-/* End Main */
+    loop = setInterval(main = function() {
+        step();
+        draw();
+    }, 1000 / sps);
+});
