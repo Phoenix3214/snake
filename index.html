@@ -1,9 +1,5 @@
-<!DOCTYPE HTML>
-
 <html>
-
 <head>
-
     <script>
         if (navigator.appName == 'Microsoft Internet Explorer' ||
                 !!(navigator.userAgent.match(/Trident/) ||
@@ -13,12 +9,9 @@
             window.location = 'https://www.google.com/chrome/browser/desktop/';
         }
     </script>
-
     <title>Snake</title>
     <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon"/>
-
     <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
-
     <style type="text/CSS">
         body {
             margin: 0px;
@@ -42,19 +35,14 @@
             margin: auto;
         }
     </style>
-
 </head>
-
 <body>
-
     <iframe id="iframe" src="./snake.html" frameborder=0></iframe>
-
     <div id="instructions">
         <h2>Use the arrow keys or WASD to move your snake.</h2>
         <br>
         <h2>Pro Tip: You can pause the game if you press enter or space!</h2>
     </div>
-
     <script>
         var iframe = document.getElementById("iframe");
         var instructions = document.getElementById("instructions");
@@ -82,7 +70,5 @@
             }
         }, 5000);
     </script>
-
 </body>
-
 </html>
