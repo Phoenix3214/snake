@@ -11,44 +11,12 @@ const dirToKeyCode = [39, 38, 37, 40]; // Right, up, left, down.
 const loseMessages = ["you lost! :(", "ouch!", "oh noes!", "that's a headache", "hasta la vista snakey", "now you're fertilizer", "R.I.P.", "WASTED",
     "*Windows blue screen*", "keep your day job", "blame lag", "why even bother?", "one more!", "so close! not.", "'clutch'", "1-800-273-8255", "go outside"];
 
-let tileSize = Math.floor(Math.min(innerWidth / cols, innerHeight / rows));
-let canvas;
-let ctx;
-let snake;
-let dir;
-let apple;
-let keydown;
-let empty;
-let finalText;
-let prev;
-let progress = 0;
-let paused = false;
-let deathCount = 0;
-
-window.addEventListener("resize", () => {
-    tileSize = Math.floor(Math.min(innerWidth / cols, innerHeight / rows));
-    initCanvas();
-    draw();
-});
-window.addEventListener("keydown", keydown = event => { // Get user input.
-    if ([32, 37, 38, 39, 40].indexOf(event.keyCode) != -1) { // stop firefox from scrolling the page.
-        event.preventDefault();
-    }
-    if (event.keyCode == 13 || event.keyCode == 32) {
-        if (finalText) {
-            finalText = null;
-            initSnake();
-            newApple();
-        } else {
-            paused = !paused;
-        }
-        return;
-    }
-    const tmpDir = keyCodeToDir[event.keyCode];
-    if (tmpDir != null && tmpDir != dir[dir.length - 1] && (((tmpDir + 2) % 4) != dir[dir.length - 1] || snake.length == 1)) {
-        dir.push(tmpDir);
-    }
-});
+const reset = () => {
+    resize();
+    initSnake();
+    newApple();
+    prev = performance.now();
+};
 const initCanvas = () => {
     canvas = document.getElementById("canvas");
     ctx = canvas.getContext("2d");
@@ -60,44 +28,6 @@ const initSnake = () => {
     snake.push(new Point(Math.random() * cols | 0, Math.random() * rows | 0));
     dir = [4];
 };
-const loop = now => {
-    progress += (now - prev) / (1e3 / sps);
-    prev = now;
-    if (progress >= 1) {
-        progress--;
-        if (!paused && ! finalText) {
-            step();
-        }
-        draw();
-    }
-    requestAnimationFrame(loop);
-};
-const step = () => {
-    if (dir.length > 1) {
-        dir.shift();
-    }
-    const next = snake[snake.length - 1].clone().sum(directions[dir[0]]);
-    let bitItself;
-    for (let n = 0; n < snake.length - 3; n++) {
-        if (snake[n].equals(snake[snake.length - 1])) {
-            bitItself = true;
-        }
-    }
-    if (!next.isLimitedBy(0, 0, cols - 1, rows - 1) || bitItself) {
-        deathCount++;
-        finalText = loseMessages[(deathCount - 1) % loseMessages.length];
-        return;
-    }
-    snake.push(next);
-    if (!apple.equals(snake[snake.length - 1])) {
-        snake.shift();
-    } else if (snake.length != cols * rows) {
-        newApple();
-    } else {
-        finalText = "You Won! :D";
-        return;
-    }
-};
 const newApple = () => {
     let x;
     let y;
@@ -108,29 +38,60 @@ const newApple = () => {
     } while(snake.some(p => p.x === x && p.y === y));
     apple = new Point(x, y);
 };
-const drawText = (string, x, y, maxWidth) => {
-    ctx.strokeStyle = hsl(Date.now() % 1e4 / 1e4);
-    ctx.fillStyle = "#000";
-    ctx.fillText(string, x, y, maxWidth);
-    ctx.strokeText(string, x, y, maxWidth);
+const loop = now => {
+    progress += (now - prev) / (1e3 / sps);
+    prev = now;
+    if (progress >= 1) {
+        progress--;
+        color = (color + 1 / Math.max(snake.length, 24)) % 1;
+        if (!paused && !finalText) {
+            step();
+        }
+        draw();
+    }
+    requestAnimationFrame(loop);
 };
-const hsl = percent => `hsl(${percent * 360}, 100%, 50%)`;
-const setFont = size => ctx.font = `${size}px PressStart2P, Trebuchet MS`;
+const step = () => {
+    if (dir.length > 1) {
+        dir.shift();
+    }
+    const head = snake[0];
+    const next = head.clone().sum(directions[dir[0]]);
+    let bitItself;
+    for (let n = 2; n < snake.length; n++) {
+        if (snake[n].equals(head)) {
+            bitItself = true;
+            break;
+        }
+    }
+    if (!next.isLimitedBy(0, 0, cols - 1, rows - 1) || bitItself) {
+        finalText = loseMessages[deathCount % loseMessages.length];
+        deathCount++;
+        return;
+    }
+    snake.unshift(next);
+    if (!apple.equals(head)) {
+        snake.pop();
+    } else if (snake.length != cols * rows) {
+        newApple();
+    } else {
+        finalText = "You Won! :D";
+        return;
+    }
+};
 const draw = () => { // Draw entire frame.
     ctx.fillStyle = "#000"; // Clear canvas.
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     ctx.beginPath(); // Draw Apple.
-    ctx.fillStyle = hsl(Date.now() % 5e3 / 5e3);
-    ctx.arc((apple.x + 0.5) * tileSize, (apple.y + 0.5) * tileSize, tileSize / 2, 0, 2 * Math.PI);
+    ctx.fillStyle = "#f00";
+    ctx.arc((apple.x + 0.5) * tileSize, (apple.y + 0.5) * tileSize, tileSize * .45, 0, 2 * Math.PI);
     ctx.fill();
 
-    for (let n = 0; n < snake.length; n++) { // Draw rainbow snake.
+    for (let n = snake.length - 1; n >= 0; n--) { // Draw rainbow snake.
         const cur = snake[n];
-        const l = snake.length;
-        const a = 1e3 / sps;
-        const b = a * Math.max(l, 24);
-        ctx.fillStyle = hsl((Date.now() + n * a) % b / b);
+        const a = Math.max(snake.length, 24);
+        ctx.fillStyle = hsl(color + (snake.length - 1 - n) / a);
         ctx.fillRect(cur.x * tileSize, cur.y * tileSize, tileSize, tileSize);
     }
 
@@ -166,11 +127,54 @@ const draw = () => { // Draw entire frame.
     ctx.textBaseline = "bottom";
     ctx.fillText(`Score: ${snake.length - 1}`, 5, canvas.height);
 }
+const drawText = (string, x, y, maxWidth) => {
+    ctx.strokeStyle = hsl(Date.now() % 1e4 / 1e4);
+    ctx.fillStyle = "#000";
+    ctx.fillText(string, x, y, maxWidth);
+    ctx.strokeText(string, x, y, maxWidth);
+};
+const hsl = percent => `hsl(${percent * 360}, 100%, 50%)`;
+const setFont = size => ctx.font = `${size}px PressStart2P, Trebuchet MS`;
+const resize = () => {
+    tileSize = Math.floor(Math.min(innerWidth / cols, innerHeight / rows));
+    initCanvas();
+};
+const keydown = event => { // Get user input.
+    if ([32, 37, 38, 39, 40].indexOf(event.keyCode) != -1) { // stop firefox from scrolling the page.
+        event.preventDefault();
+    }
+    if (event.keyCode == 13 || event.keyCode == 32) {
+        if (finalText) {
+            finalText = null;
+            reset();
+        } else {
+            paused = !paused;
+            prev = performance.now();
+        }
+    } else {
+        const tmpDir = keyCodeToDir[event.keyCode];
+        if (tmpDir != null && tmpDir != dir[dir.length - 1] && (((tmpDir + 2) % 4) != dir[dir.length - 1] || snake.length == 1)) {
+            dir.push(tmpDir);
+        }
+    }
+};
+
+let tileSize;
+let canvas;
+let ctx;
+let snake;
+let dir;
+let apple;
+let finalText;
+let prev;
+let progress = 0;
+let paused = false;
+let deathCount = 0;
+let color = 0;
 
 document.addEventListener("DOMContentLoaded", () => {
-    initCanvas();
-    initSnake();
-    newApple();
-    prev = performance.now();
+    window.addEventListener("resize", () => requestAnimationFrame(resize));
+    window.addEventListener("keydown", keydown);
+    reset();
     requestAnimationFrame(loop);
 });
