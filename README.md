@@ -1,9 +1,16 @@
 # Snake
 
 Want to play snake? Go ahead! ---> [Take me to it.](https://tombez.github.io/snake/)
-Try to beat my highscore of 86!
+Try to beat my highscore of 97!
 
-### --- 17-1-2017 D-M-Y ---
+### --- 15-02-2018 D-M-Y ---
+
+Recently, I looked at the code I had written, and thought: I could do better now.
+So I have.
+
+I still want to make a bot for snake, although I've lost interest in the other goals.
+
+### --- 17-01-2017 D-M-Y ---
 
 This project started two years ago when I made a snake game while learning JavaScript.
 
@@ -25,7 +32,7 @@ Only including:
 		in order from tail to head, each containing an 'x' and 'y' property.
 	‣ An object representing the location of the apple,
 		containing two integer properties 'x' and 'y'.
-		
+
 In addition, it is only allowed to affect the game by simulating user-input.
 
 ## Checklist
@@ -42,5 +49,5 @@ Things I plan to add to the code:
 	‣ Draw only what is needed to the canvas.
 	‣ A 'playerBot' which is described above.
 	‣ Make an implementation in Java.
-	
+
 This entire document is subject to change at any time. (Especially if I make typos.)
