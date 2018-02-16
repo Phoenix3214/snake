@@ -88,10 +88,10 @@ const draw = () => { // Draw entire frame.
     ctx.arc((apple.x + 0.5) * tileSize, (apple.y + 0.5) * tileSize, tileSize * .45, 0, 2 * Math.PI);
     ctx.fill();
 
+    const len = Math.max(snake.length, 24);
     for (let n = snake.length - 1; n >= 0; n--) { // Draw rainbow snake.
         const cur = snake[n];
-        const a = Math.max(snake.length, 24);
-        ctx.fillStyle = hsl(color + (snake.length - 1 - n) / a);
+        ctx.fillStyle = hsl(color + (snake.length - 1 - n) / len);
         ctx.fillRect(cur.x * tileSize, cur.y * tileSize, tileSize, tileSize);
     }
 
@@ -175,6 +175,7 @@ let color = 0;
 document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener("resize", () => requestAnimationFrame(resize));
     window.addEventListener("keydown", keydown);
+    window.addEventListener("focus", () => prev = performance.now());
     reset();
     requestAnimationFrame(loop);
 });
