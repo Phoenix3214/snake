@@ -1,7 +1,7 @@
 // User Variables
 const cols = 20;
 const rows = 20;
-const sps = 10; // Steps per second.
+const sps = 5; // Steps per second.
 const rainbowMode = true;
 
 // tables
